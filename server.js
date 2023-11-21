@@ -9,7 +9,7 @@ if (process.env.NODE_ENV !== "production") {
 const port = process.env.PORT;
 
 app.get("/",(req,res)=>{
-    res.json({success:true,message:"E Commerce API HOME PAGE"});
+    res.json({success:true,message:"E Commerce API HOME PAGE",cookie:req.cookies});
 });
 
 
