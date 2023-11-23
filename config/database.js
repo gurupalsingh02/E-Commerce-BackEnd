@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 
-exports.connectDatabase = ()=> mongoose
-  .connect(process.env.MONGO_URI)
-  .then((conn) => {
-    console.log(`MongoDB connected ${conn.connection.host}`);
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+exports.connectDatabase = () => {
+  mongoose
+    .connect(process.env.MONGO_URI)
+    .then((con) => {
+      console.log(`database connected successfully ${con.connection.host}`);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
