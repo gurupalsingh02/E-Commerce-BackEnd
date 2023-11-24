@@ -122,18 +122,3 @@ exports.getMyProducts = async (req, res) => {
   }
 };
 exports.uploadProductImage = async (req, res) => {};
-
-exports.getProductReviews = async (req, res) => {
-  try {
-    const reviews = await Review.find({ product: req.params.id });
-    res.status(200).json({
-      success: true,
-      reviews,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};

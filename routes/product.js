@@ -19,6 +19,5 @@ router.route("/delete/:id").delete(isAuthenticated, isAuthorized, deleteProduct)
 router.route("/myproducts").get(isAuthenticated, getMyProducts);
 router.route("/getall").get(isAuthenticated, getAllProducts);
 router.route("/getproduct/:id").get(isAuthenticated, getSingleProduct);
-router.route("/reviews/:id").get(isAuthenticated, getProductReviews);
 
 module.exports = router;
