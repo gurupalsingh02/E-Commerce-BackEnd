@@ -45,12 +45,10 @@ userSchema.pre("save", async function (next) {
 });
 
 userSchema.methods.matchPassword = async function (password) {
-  console.log(password + "  " + this.password);
   return await bcrypt.compare(password, this.password);
 };
 
 userSchema.methods.generateToken = async function () {
-  console.log(process.env.JWT_SECRET);
   return await jwt.sign({ _id: this._id }, process.env.JWT_SECRET);
 };
 userSchema.methods.getResetPasswordToken = function () {
