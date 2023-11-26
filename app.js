@@ -1,15 +1,11 @@
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
-const rateLimiter = require("express-rate-limit");
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config({ path: "./config/config.env" });
 }
 
 //using middlewares
-app.set("trust proxy", 1);
-app.use(rateLimiter({ windowMs: 15 * 60 * 1000, max: 100 }));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
