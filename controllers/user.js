@@ -4,9 +4,9 @@ const crypto = require("crypto");
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password,imageUrl} = req.body;
+    const { name, email, password, imageUrl } = req.body;
     let user = await User.findOne({ email });
-    const role = 'user';
+    const role = "user";
     if (user)
       return res
         .status(400)
@@ -67,7 +67,12 @@ exports.login = async (req, res) => {
       user,
       token,
     });
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
 };
 
 exports.logout = async (req, res) => {
@@ -125,10 +130,10 @@ exports.updatePassword = async (req, res) => {
 exports.updateProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    const { name, email,imageUrl } = req.body;
-    if(email){
-      const alreadyExists = await User.findOne({email});
-      if(alreadyExists){
+    const { name, email, imageUrl } = req.body;
+    if (email) {
+      const alreadyExists = await User.findOne({ email });
+      if (alreadyExists) {
         return res.status(400).json({
           success: false,
           message: "Email already exists",
@@ -141,36 +146,13 @@ exports.updateProfile = async (req, res) => {
     if (email) {
       user.email = email;
     }
-    if(imageUrl){
+    if (imageUrl) {
       user.imageUrl = imageUrl;
     }
     await user.save();
     res.status(200).json({
       success: true,
       message: "Profile updated successfully",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-exports.deleteMyProfile = async (req, res) => {
-  try {
-    const user = await User.findById(req.user._id);
-
-    await user.deleteOne();
-    // logout User after deleting profile.
-    res.cookie("token", null, {
-      expires: new Date(Date.now()),
-      httpOnly: true,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Profile deleted successfully",
     });
   } catch (error) {
     res.status(500).json({
@@ -197,7 +179,7 @@ exports.myProfile = async (req, res) => {
 
 exports.getUserProfile = async (req, res) => {
   try {
-    if(req.user.role==='user'&&req.user._id.toString()!==req.params.id){
+    if (req.user.role === "user" && req.user._id.toString() !== req.params.id) {
       return res.status(401).json({
         success: false,
         message: "you do not have permission to access this user",
@@ -279,30 +261,3 @@ exports.forgotPassword = async (req, res) => {
     });
   }
 };
-
-
-exports.resetPassword = async (req,res)=>{
-try {
-  const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
-  const user = await User.findOne({resetPasswordToken,resetPasswordExpire:{$gt:Date.now()}});
-  if(!user){
-    return res.status(401).json({
-      success:false,
-      message:'Invalid Token or Token Expired'
-    });
-  }
-  user.password = req.body.password;
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpire = undefined;
-  await user.save();
-  res.status(200).json({
-    success:true,
-    message:'Password Updated Successfully'
-  });
-} catch (error) {
-  res.status(500).json({
-    success: false,
-    message: error.message,
-  });
-}
-}

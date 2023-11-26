@@ -1,12 +1,21 @@
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
-
+const rateLimiter = require("express-rate-limit");
+const helmet = require("helmet");
+const xss = require("xss-clean");
+const mongoSanitize = require("express-mongo-sanitize");
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config({ path: "./config/config.env" });
 }
 
 //using middlewares
+app.set("trust proxy", 1);
+app.use(rateLimiter({ windowMs: 15 * 60 * 1000, max: 100 }));
+app.use(helmet());
+app.use(xss());
+app.use(mongoSanitize());
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -19,13 +28,11 @@ const orderRoutes = require("./routes/order");
 
 // using routes
 app.route("/").get((req, res) => {
-  res
-    .status(200)
-    .json({
-      success: true,
-      message: "Welcome to Ecommerce API",
-      Note: "the documentation of the api is available at /documentation",
-    });
+  res.status(200).json({
+    success: true,
+    message: "Welcome to Ecommerce API",
+    Note: "the documentation of the api is available at /documentation",
+  });
 });
 app.route("/documentation").get((req, res) => {
   res.sendFile(__dirname + "/index.html");
