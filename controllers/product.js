@@ -121,4 +121,99 @@ exports.getMyProducts = async (req, res) => {
     });
   }
 };
-exports.uploadProductImage = async (req, res) => {};
+exports.addToCart = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      return res.status(400).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+    const cartItem = req.user.cart.find(
+      (item) => item.product.toString() === product._id.toString()
+    );
+    if (cartItem) {
+      cartItem.quantity += 1;
+    } else {
+      req.user.cart.push({ product: product._id, quantity: 1 });
+    }
+    await req.user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Product added to cart successfully",
+      cart: req.user.cart,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.removeFromCart = async (req, res) => {
+  try {
+    const cartItem = req.user.cart.find(
+      (item) => item.product.toString() === req.params.id.toString()
+    );
+    if (!cartItem) {
+      return res.status(400).json({
+        success: false,
+        message: "Product not found in cart",
+      });
+    }
+    if (cartItem) {
+      cartItem.quantity -= 1;
+    }
+    if (cartItem.quantity == 0) {
+      const index = req.user.cart.indexOf(req.params.id);
+      req.user.cart.splice(index, 1);
+    }
+    await req.user.save();
+    return res.status(200).json({
+      success: true,
+      message: "Product removed from cart successfully",
+      cart: req.user.cart,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.getCart = async (req, res) => {
+  try {
+    const cart = req.user.cart;
+    let subtotal = 0;
+    for (const item of cart) {
+      const product = await Product.findById(item.product);
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not",
+          product: item.product,
+          name: item.name,
+          item,
+        });
+      }
+      subtotal += product.price * item.quantity;
+      const shippingFee = 40;
+      const total = subtotal + shippingFee;
+      res.status(200).json({
+        success: true,
+        cart,
+        subtotal,
+        shippingFee,
+        total,
+      });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

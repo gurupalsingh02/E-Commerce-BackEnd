@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 exports.isAuthenticated = async (req, res, next) => {
   try {
@@ -20,22 +20,5 @@ exports.isAuthenticated = async (req, res, next) => {
     next();
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
-  }
-};
-
-exports.isAuthorized = async (req, res, next) => {
-  try {
-    if(req.user.role!=='admin'){
-      return res.status(401).json({
-        success: false,
-        message: "you are not authorized to access this.",
-      });
-    }
-    next();
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
   }
 };

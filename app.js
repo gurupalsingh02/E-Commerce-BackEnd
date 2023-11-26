@@ -15,11 +15,16 @@ app.use(cookieParser());
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/product");
 const reviewRoutes = require("./routes/review");
+const orderRoutes = require("./routes/order");
 
 // using routes
+app.route('/').get((req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/products", productRoutes);
 app.use("/api/v1/reviews", reviewRoutes);
+app.use("/api/v1/orders", orderRoutes);
 
 
 // Error handler middleware

@@ -32,4 +32,12 @@ const reviewSchema = new mongoose.Schema(
 );
 reviewSchema.index({ product: 1, user: 1 }, { unique: true });
 
+reviewSchema.post("save", function () {
+  this.constructor.calculateAverageRating(this.product);
+});
+
+reviewSchema.post("deleteOne", function () {
+  this.constructor.calculateAverageRating(this.product);
+});
+
 module.exports = mongoose.model("Review", reviewSchema);

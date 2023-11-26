@@ -60,9 +60,13 @@ const productSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    numOfReviews:{
+      type: Number,
+      default: 0,
+    },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
   },
@@ -71,4 +75,9 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+productSchema.pre("deleteOne", { document: true }, async function (next) {
+  const product = this;
+  await Review.deleteMany({ product: product._id });
+  next();
+});
 module.exports = mongoose.model("Product", productSchema);

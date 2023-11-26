@@ -34,7 +34,7 @@ router.route("/me").get(isAuthenticated, myProfile);
 
 router.route("/getuser/:id").get(isAuthenticated, getUserProfile);
 
-router.route("/getall").get(isAuthenticated, isAuthorized, getAllUsers);
+router.route("/getall").get(isAuthenticated,getAllUsers);
 
 router.route("/forgot/password").post(forgotPassword);
 

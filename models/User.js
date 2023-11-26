@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const validator = require('validator');
+const validator = require("validator");
 const userSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -17,9 +17,9 @@ const userSchema = new mongoose.Schema({
       message: "Please Provide a valid email",
     },
   },
-  imageUrl:{
-    type:String,
-    required:[true,"Please enter a Image Url"],
+  imageUrl: {
+    type: String,
+    required: [true, "Please enter a Image Url"],
   },
   password: {
     type: String,
@@ -27,7 +27,6 @@ const userSchema = new mongoose.Schema({
     unique: [true, "Email already exists"],
     minlength: [6, "Password must be at least 6 characters"],
     select: false,
-    
   },
   role: {
     type: String,
@@ -36,6 +35,19 @@ const userSchema = new mongoose.Schema({
   },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
+  cart: [
+    {
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
 });
 userSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
@@ -61,4 +73,5 @@ userSchema.methods.getResetPasswordToken = function () {
   this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
   return resetToken;
 };
+
 module.exports = mongoose.model("User", userSchema);
