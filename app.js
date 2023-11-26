@@ -25,7 +25,6 @@ app.route("/").get((req, res) => {
   res.status(200).json({
     success: true,
     message: "Welcome to Ecommerce API",
-    Note: "the documentation of the api is available at /documentation",
   });
 });
 app.route("/documentation").get((req, res) => {
