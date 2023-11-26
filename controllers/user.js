@@ -4,9 +4,9 @@ const crypto = require("crypto");
 
 exports.register = async (req, res) => {
   try {
-    const { name, email, password,imageUrl,role} = req.body;
+    const { name, email, password,imageUrl} = req.body;
     let user = await User.findOne({ email });
-    if(!role)role = 'user';
+    const role = 'user';
     if (user)
       return res
         .status(400)
@@ -126,6 +126,15 @@ exports.updateProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
     const { name, email,imageUrl } = req.body;
+    if(email){
+      const alreadyExists = await User.findOne({email});
+      if(alreadyExists){
+        return res.status(400).json({
+          success: false,
+          message: "Email already exists",
+        });
+      }
+    }
     if (name) {
       user.name = name;
     }

@@ -114,6 +114,12 @@ exports.cancelOrder = async (req, res) => {
         message: "Order not found",
       });
     }
+    if(order.user.toString()!==req.user._id.toString()){
+        return res.status(401).json({
+          success: false,
+          message: "you do not have permission to cancel this product",
+        });
+      }
     const time = new Date(order.createdAt).getTime()+ 30*60*1000;
     console.log(time+"        "+Date.now());
     if(time < Date.now()){

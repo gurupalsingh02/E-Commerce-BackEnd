@@ -10,7 +10,6 @@ const {
   getMyProducts,
   getAllProducts,
   getSingleProduct,
-  getProductReviews,
   addToCart,
   removeFromCart,
   getCart,

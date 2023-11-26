@@ -65,6 +65,12 @@ exports.updateProduct = async (req, res) => {
         message: "Product not found",
       });
     }
+    if(product.user.toString()!==req.user._id.toString()){
+      return res.status(401).json({
+        success: false,
+        message: "you do not have permission to update this product",
+      });
+    }
     if (name) product.name = name;
     if (description) product.description = description;
     if (price) product.price = price;
@@ -92,6 +98,12 @@ exports.deleteProduct = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Product not found",
+      });
+    }
+    if(product.user.toString()!==req.user._id.toString()){
+      return res.status(401).json({
+        success: false,
+        message: "you do not have permission to update this product",
       });
     }
     await product.deleteOne();
