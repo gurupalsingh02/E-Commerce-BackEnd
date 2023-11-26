@@ -2,9 +2,6 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const rateLimiter = require("express-rate-limit");
-const helmet = require("helmet");
-const xss = require("xss-clean");
-const mongoSanitize = require("express-mongo-sanitize");
 if (process.env.NODE_ENV !== "production") {
   require("dotenv").config({ path: "./config/config.env" });
 }
@@ -12,9 +9,6 @@ if (process.env.NODE_ENV !== "production") {
 //using middlewares
 app.set("trust proxy", 1);
 app.use(rateLimiter({ windowMs: 15 * 60 * 1000, max: 100 }));
-app.use(helmet());
-app.use(xss());
-app.use(mongoSanitize());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -28,8 +28,6 @@ router.route("/update/password").post(isAuthenticated, updatePassword);
 
 router.route("/update/profile").post(isAuthenticated, updateProfile);
 
-router.route("/delete/me").delete(isAuthenticated, deleteMyProfile);
-
 router.route("/me").get(isAuthenticated, myProfile);
 
 router.route("/getuser/:id").get(isAuthenticated, getUserProfile);
@@ -38,5 +36,4 @@ router.route("/getall").get(isAuthenticated,getAllUsers);
 
 router.route("/forgot/password").post(forgotPassword);
 
-router.route("/password/reset/:token").put(resetPassword);
 module.exports = router;
